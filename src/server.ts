@@ -7,6 +7,7 @@ import bodyParser from "body-parser"
 import connectToMongodb from "./middleware/connectToMongodb.js";
 import authRouter from "./routes/users.js"
 import postRouter from "./routes/posts.js"
+import tagRouter from "./routes/tags.js"
 import uploadRouter from "./routes/upload.js"
 import path from "path";
 
@@ -19,9 +20,11 @@ app.use(bodyParser.json())
 app.use(express.urlencoded({extended: true}))
 dotenv.config();
 
-app.use("/public" , express.static(path.join(path.dirname("./"), 'public')))
+app.use("/public", express.static(path.join(path.dirname("./"), 'public')))
+
 app.use("/auth", authRouter)
 app.use("/post", postRouter)
+app.use("/tag", tagRouter)
 app.use("/upload", uploadRouter)
 
 
