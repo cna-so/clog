@@ -1,6 +1,6 @@
 import mongoose, {Schema} from "mongoose";
 
-interface IUser {
+export interface IUser {
     first_name: string
     last_name: string
     email: string
@@ -10,8 +10,8 @@ interface IUser {
     links: {
         title: string
         address: string
-    }[]
-
+    }[],
+    created_at: Date
 }
 
 const users =
@@ -45,7 +45,12 @@ const users =
             }],
             default: null
         },
-        description: String
+        description: String,
+        created_at: {
+            type: Date,
+            required: true,
+            default: new Date()
+        },
     });
 const Users = mongoose.model('users', users);
 export default Users;
