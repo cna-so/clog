@@ -6,14 +6,14 @@ import bodyParser from "body-parser"
 
 import connectToMongodb from "./middleware/connectToMongodb.js";
 import authRouter from "./routes/users.js"
-dotenv.config();
 
 const app: Express = express()
 
 app.use(cors())
 app.use(bodyParser.json())
+dotenv.config();
 
-app.use("/auth" , authRouter)
+app.use("/auth", authRouter)
 
 const port = process.env.PORT
 const dbUrl = process.env.MONGODB_URL || ""

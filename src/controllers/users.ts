@@ -3,6 +3,7 @@ import User from "../models/users.js"
 import {ComparePasswordHash, GenerateHashPassword} from "../helpers/passwordHashing.js";
 import checkSigninCredentials from "../helpers/checkSigninCredentials.js";
 import {UserSerializer} from "../serializer/userSerializer.js";
+import {GenerateJWTToken} from "../helpers/jwtHandler.js";
 
 export const createUser = async (req: Request, res: Response) => {
     const {first_name, last_name, email, password, links, description} = req.body;
@@ -34,8 +35,11 @@ export const signin = async (req: Request, res: Response) => {
         if (!await ComparePasswordHash(password, user.password)) {
             return res.status(404).json({message: "password is wrong"})
         }
+        // generate token for user
+        const jwtToken = GenerateJWTToken(user)
         // return user if everything is right
-        res.status(200).json({user: UserSerializer(user)})
+        res.status(200).json({user: UserSerializer(user) , token : {access_token : `Bearer ${jwtToken}`}})
+
     } catch (err: any) {
         res.status(500).json({message: err.message})
     }
