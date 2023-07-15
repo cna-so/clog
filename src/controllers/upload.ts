@@ -9,7 +9,7 @@ export const UploadImage = async (req: Request, res: Response) => {
     } catch (err: any) {
         res.status(500).json(err.message)
     }
-
+}
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, path.join("public", "uploads"))
@@ -19,4 +19,4 @@ const storage = multer.diskStorage({
     }
 })
 
-export const upload = multer({ storage: storage });
+export const upload = multer({storage: storage});
