@@ -2,6 +2,7 @@ import {IUser} from "../models/users.js";
 
 export const UserSerializer = (user: IUser) => {
     return {
+        id: user._id,
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,

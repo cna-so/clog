@@ -1,6 +1,7 @@
 import {Request, Response} from "express";
 import Posts from "../models/posts.js";
 import Users from "../models/users.js";
+import {match} from "assert";
 
 export const CreatePost = async (req: Request, res: Response) => {
     const {title, body, user_id, tags} = req.body;
@@ -15,6 +16,32 @@ export const CreatePost = async (req: Request, res: Response) => {
         if (err?.kind === "ObjectId") {
             res.status(409).json({message: "user id isn't valid"})
         }
+        res.status(500).json({message: err.message})
+    }
+}
+
+export const GetPostArticles = async (req: Request, res: Response) => {
+    const page = req.query.page
+
+    const currentPage = page ? +page : 1
+    const perPage = 10
+
+    try {
+        const posts = await Posts.aggregate([{$sort: {created_at: -1}}]).skip(currentPage * perPage - perPage).limit(perPage).exec()
+        const count = await Posts.count()
+        const nextPage = currentPage + 1
+        const hasNextPage = nextPage <= Math.ceil(count / perPage)
+        const totalPages = Math.ceil(count / perPage)
+        const previousPage = currentPage <= 1 ? null : currentPage - 1
+        res.status(200).json({
+            next: hasNextPage ? nextPage : null,
+            current_page: currentPage,
+            total_pages: totalPages,
+            previous_page :previousPage ,
+            count,
+            posts
+        })
+    } catch (err: any) {
         res.status(500).json({message: err.message})
     }
 }
