@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
 import Posts from "../models/posts.js";
 import Users from "../models/users.js";
-import {match} from "assert";
 
 export const CreatePost = async (req: Request, res: Response) => {
     const {title, body, user_id, tags} = req.body;
@@ -37,11 +36,24 @@ export const GetPostArticles = async (req: Request, res: Response) => {
             next: hasNextPage ? nextPage : null,
             current_page: currentPage,
             total_pages: totalPages,
-            previous_page :previousPage ,
+            previous_page: previousPage,
             count,
             posts
         })
     } catch (err: any) {
+        res.status(500).json({message: err.message})
+    }
+}
+
+export const GetArticleById = async (req: Request, res: Response) => {
+    const id = req.params.id
+    try {
+        const searchedPost = await Posts.findById(id)
+        res.status(200).json({post: searchedPost})
+    } catch (err: any) {
+        if (err.kind === "ObjectId") {
+            res.status(409).json({message: "post_id isn't valid"})
+        }
         res.status(500).json({message: err.message})
     }
 }
